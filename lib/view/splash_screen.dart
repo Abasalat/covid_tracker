@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:covid_tracker/view/worldstate_screen.dart';
+import 'root_sheel.dart'; // <-- change import
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -23,12 +23,15 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.dispose();
   }
 
+  @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 5), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const WorldstateScreen()),
+        MaterialPageRoute(
+          builder: (_) => const RootShell(),
+        ), // <-- was WorldstateScreen()
       );
     });
   }
@@ -39,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
       body: SafeArea(
         child: Center(
           child: Column(
-            mainAxisSize: MainAxisSize.min, // take only needed height
+            mainAxisSize: MainAxisSize.min,
             children: [
               AnimatedBuilder(
                 animation: _controller,
@@ -53,9 +56,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: child,
                 ),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.08,
-              ), // was * 08 (8x) — now 8%
+              SizedBox(height: MediaQuery.of(context).size.height * 0.08),
               const Text(
                 'Covid-19 \n Tracker App',
                 textAlign: TextAlign.center,
