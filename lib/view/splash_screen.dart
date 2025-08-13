@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'root_sheel.dart'; // <-- change import
+import 'root_shell.dart'; // <-- change import
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
