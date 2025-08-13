@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:covid_tracker/view/worldstate_screen.dart';
 import 'package:covid_tracker/view/countries_list.dart';
 
+const Color kPrimary = Color(0xff1aa260); // your brand green
+
 class RootShell extends StatefulWidget {
-  const RootShell({super.key});
+  final int initialIndex; // 0 = Global, 1 = Countries
+  const RootShell({super.key, this.initialIndex = 0});
 
   @override
   State<RootShell> createState() => _RootShellState();
@@ -12,40 +15,65 @@ class RootShell extends StatefulWidget {
 class _RootShellState extends State<RootShell> {
   int _index = 0;
 
-  // Holds small per-page states (like scroll position)
   final PageStorageBucket _bucket = PageStorageBucket();
 
-  // Keep tabs alive; give each a PageStorageKey (no inner PageStorage needed)
   final List<Widget> _pages = const [
     WorldstateScreen(key: PageStorageKey('global_overview')),
     CountriesListScreen(key: PageStorageKey('countries_list')),
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _index = (widget.initialIndex >= 0 && widget.initialIndex < _pages.length)
+        ? widget.initialIndex
+        : 0;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
-      // Allow system back only on the first tab
       canPop: _index == 0,
-      // New API (replaces deprecated onPopInvoked)
-      onPopInvokedWithResult: (bool didPop, Object? result) {
-        if (!didPop && _index != 0) {
-          setState(() => _index = 0); // go to first tab
-        }
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && _index != 0) setState(() => _index = 0);
       },
       child: Scaffold(
         body: PageStorage(
           bucket: _bucket,
-          // IndexedStack keeps both tabs alive; keys + PageStorage remember scroll
           child: IndexedStack(index: _index, children: _pages),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _index,
-          onTap: (i) => setState(() => _index = i),
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.public), label: 'Global'),
-            BottomNavigationBarItem(icon: Icon(Icons.flag), label: 'Countries'),
-          ],
+        // ✅ Material-3 NavigationBar with green indicator + white icon on selected
+        bottomNavigationBar: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            indicatorColor: kPrimary, // selected item background (green)
+            backgroundColor: Colors.white, // bar background (white)
+            // icon colors: selected=white, unselected=green
+            iconTheme: WidgetStateProperty.resolveWith((states) {
+              final selected = states.contains(WidgetState.selected);
+              return IconThemeData(color: selected ? Colors.white : kPrimary);
+            }),
+            // labels always visible; (colors are fine default with indicator)
+            labelTextStyle: WidgetStateProperty.all(
+              const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          child: NavigationBar(
+            selectedIndex: _index,
+            onDestinationSelected: (i) => setState(() => _index = i),
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.public),
+                label: 'Global',
+                selectedIcon: Icon(Icons.public),
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.flag),
+                label: 'Countries',
+                selectedIcon: Icon(Icons.flag),
+              ),
+            ],
+          ),
         ),
       ),
     );
