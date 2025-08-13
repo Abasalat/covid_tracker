@@ -1,10 +1,9 @@
 import 'package:covid_tracker/Model/world_state_model.dart';
 import 'package:covid_tracker/Services/state_servies.dart';
-import 'package:covid_tracker/view/countries_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'root_sheel.dart';
+import 'root_shell.dart';
 
 // ✅ new imports
 import 'package:covid_tracker/theme/app_colors.dart';
