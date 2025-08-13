@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:covid_tracker/view/worldstate_screen.dart';
 import 'package:covid_tracker/view/countries_list.dart';
-
-const Color kPrimary = Color(0xff1aa260); // your brand green
+import 'package:covid_tracker/theme/app_colors.dart'; // ✅ new
 
 class RootShell extends StatefulWidget {
   final int initialIndex; // 0 = Global, 1 = Countries
@@ -42,17 +41,14 @@ class _RootShellState extends State<RootShell> {
           bucket: _bucket,
           child: IndexedStack(index: _index, children: _pages),
         ),
-        // ✅ Material-3 NavigationBar with green indicator + white icon on selected
         bottomNavigationBar: NavigationBarTheme(
           data: NavigationBarThemeData(
-            indicatorColor: kPrimary, // selected item background (green)
-            backgroundColor: Colors.white, // bar background (white)
-            // icon colors: selected=white, unselected=green
+            indicatorColor: kPrimary,
+            backgroundColor: Colors.white,
             iconTheme: WidgetStateProperty.resolveWith((states) {
               final selected = states.contains(WidgetState.selected);
               return IconThemeData(color: selected ? Colors.white : kPrimary);
             }),
-            // labels always visible; (colors are fine default with indicator)
             labelTextStyle: WidgetStateProperty.all(
               const TextStyle(fontWeight: FontWeight.w600),
             ),
