@@ -4,6 +4,10 @@ import 'package:covid_tracker/view/country_record.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+// ✅ new imports
+import 'package:covid_tracker/theme/app_colors.dart';
+import 'package:covid_tracker/view/widgets/mini_stat_chip.dart';
+
 class CountriesListScreen extends StatefulWidget {
   const CountriesListScreen({super.key});
 
@@ -15,16 +19,7 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
   final TextEditingController searchController = TextEditingController();
   final StateServies stateServies = StateServies();
 
-  static const Color kPrimary = Color(0xff1aa260);
-  static const Color kBlue = Color(0xff4285F4);
-  static const Color kRed = Color(0xffde5246);
-
   Timer? _debounce;
-
-  // ---- helpers (replace deprecated withOpacity) ----
-  int _a(double opacity) => (opacity * 255).round().clamp(0, 255);
-  Color _alpha(Color c, double opacity) => c.withAlpha(_a(opacity));
-  // --------------------------------------------------
 
   @override
   void dispose() {
@@ -45,9 +40,7 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
     setState(() {});
   }
 
-  Future<void> _refresh() async {
-    setState(() {}); // re-run FutureBuilder
-  }
+  Future<void> _refresh() async => setState(() {});
 
   String _fmt(num? n) {
     final s = (n ?? 0).toString();
@@ -68,7 +61,6 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Better AppBar with gradient + rounded bottom
       appBar: AppBar(
         elevation: 0,
         toolbarHeight: 80,
@@ -100,9 +92,9 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
             onPressed: _refresh,
             icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
           ),
           const SizedBox(width: 8),
         ],
@@ -114,7 +106,6 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
           edgeOffset: 8,
           child: Column(
             children: [
-              // Search field
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: TextField(
@@ -145,30 +136,26 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
                 ),
               ),
 
-              // Results list
               Expanded(
                 child: FutureBuilder<List<dynamic>>(
                   future: stateServies.fetchCountriesList(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Shimmer skeletons
                       return ListView.separated(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                         itemCount: 8,
                         separatorBuilder: (_, __) => const SizedBox(height: 10),
-                        itemBuilder: (context, index) {
-                          return Shimmer.fromColors(
-                            baseColor: Colors.grey.shade300,
-                            highlightColor: Colors.grey.shade100,
-                            child: Container(
-                              height: 74,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                        itemBuilder: (context, index) => Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            height: 74,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       );
                     }
 
@@ -200,8 +187,6 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
 
                     final list = snapshot.data ?? [];
                     final query = searchController.text.trim().toLowerCase();
-
-                    // Filter
                     final filtered = query.isEmpty
                         ? list
                         : list.where((item) {
@@ -228,7 +213,6 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
 
                     return Column(
                       children: [
-                        // Results count chip
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
@@ -304,7 +288,6 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
                                   ),
                                   child: Row(
                                     children: [
-                                      // Flag
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.network(
@@ -322,8 +305,6 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
                                         ),
                                       ),
                                       const SizedBox(width: 12),
-
-                                      // Name + quick stats
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment:
@@ -341,33 +322,29 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
                                               spacing: 8,
                                               runSpacing: 6,
                                               children: [
-                                                _MiniStatChip(
+                                                MiniStatChip(
                                                   icon: Icons.coronavirus,
                                                   label: 'Cases',
                                                   value: cases,
                                                   color: kBlue,
-                                                  alpha: _alpha,
                                                 ),
-                                                _MiniStatChip(
+                                                MiniStatChip(
                                                   icon: Icons.trending_up,
                                                   label: 'Recovered',
                                                   value: recov,
                                                   color: kPrimary,
-                                                  alpha: _alpha,
                                                 ),
-                                                _MiniStatChip(
+                                                MiniStatChip(
                                                   icon: Icons.trending_down,
                                                   label: 'Deaths',
                                                   value: death,
                                                   color: kRed,
-                                                  alpha: _alpha,
                                                 ),
                                               ],
                                             ),
                                           ],
                                         ),
                                       ),
-
                                       const Icon(Icons.chevron_right),
                                     ],
                                   ),
@@ -384,50 +361,6 @@ class _CountriesListScreenState extends State<CountriesListScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-// Small UI chip for quick stats in the list
-class _MiniStatChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color color;
-  final Color Function(Color, double) alpha;
-
-  const _MiniStatChip({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.color,
-    required this.alpha,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: alpha(color, 0.08), // <- no withOpacity
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: alpha(color, 0.20)), // <- no withOpacity
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: 6),
-          Text(
-            '$label: $value',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
-          ),
-        ],
       ),
     );
   }
