@@ -4,6 +4,7 @@ import 'package:covid_tracker/view/countries_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'root_sheel.dart';
 
 class WorldstateScreen extends StatefulWidget {
   const WorldstateScreen({super.key});
@@ -78,33 +79,14 @@ class _WorldstateScreenState extends State<WorldstateScreen>
           children: [
             Text(
               'COVID-19 Dashboard',
-              style: TextStyle(fontWeight: FontWeight.w700),
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
             ),
             SizedBox(height: 4),
-            Text(
-              'Global overview',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-            ),
           ],
         ),
-        actions: [
-          IconButton(
-            tooltip: 'Refresh',
-            onPressed: _refresh,
-            icon: const Icon(Icons.refresh),
-          ),
-          IconButton(
-            tooltip: 'Countries',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const CountriesListScreen()),
-              );
-            },
-            icon: const Icon(Icons.flag),
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
 
       body: SafeArea(
@@ -288,44 +270,98 @@ class _WorldstateScreenState extends State<WorldstateScreen>
                   const SizedBox(height: 16),
 
                   // Detailed Summary (keeps your ReusabelRow fields)
+                  // --- Detailed Summary (grid tiles) ---
+                  // --- Detailed Summary (safe, no-overflow layout) ---
                   Card(
                     elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 8,
-                      ),
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const SizedBox(height: 8),
                           const _SectionHeader('Detailed Summary'),
-                          const SizedBox(height: 6),
-                          ReusabelRow(title: 'Total', value: _fmt(total)),
-                          ReusabelRow(title: 'Deaths', value: _fmt(deaths)),
-                          ReusabelRow(
-                            title: 'Recovered',
-                            value: _fmt(recovered),
+                          const SizedBox(height: 12),
+                          LayoutBuilder(
+                            builder: (context, constraints) {
+                              // 2 tiles per row with 12px gap
+                              final gap = 12.0;
+                              final tileWidth =
+                                  (constraints.maxWidth - gap) / 2;
+
+                              return Wrap(
+                                spacing: gap,
+                                runSpacing: gap,
+                                children: [
+                                  SizedBox(
+                                    width: tileWidth,
+                                    child: _StatTile(
+                                      label: 'Total',
+                                      value: _fmt(total),
+                                      icon: Icons.public,
+                                      color: kBlue,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: tileWidth,
+                                    child: _StatTile(
+                                      label: 'Deaths',
+                                      value: _fmt(deaths),
+                                      icon: Icons.trending_down,
+                                      color: kRed,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: tileWidth,
+                                    child: _StatTile(
+                                      label: 'Recovered',
+                                      value: _fmt(recovered),
+                                      icon: Icons.trending_up,
+                                      color: kPrimary,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: tileWidth,
+                                    child: _StatTile(
+                                      label: 'Active',
+                                      value: _fmt(data.active ?? 0),
+                                      icon: Icons.local_hospital_outlined,
+                                      color: const Color(0xfff4b400),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: tileWidth,
+                                    child: _StatTile(
+                                      label: 'Critical',
+                                      value: _fmt(data.critical ?? 0),
+                                      icon: Icons.warning_amber_rounded,
+                                      color: Colors.deepOrange,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: tileWidth,
+                                    child: _StatTile(
+                                      label: 'Today Deaths',
+                                      value: _fmt(data.todayDeaths ?? 0),
+                                      icon: Icons.event_busy,
+                                      color: kRed,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: tileWidth,
+                                    child: _StatTile(
+                                      label: 'Today Recovered',
+                                      value: _fmt(data.todayRecovered ?? 0),
+                                      icon: Icons.today,
+                                      color: Colors.teal,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
-                          ReusabelRow(
-                            title: 'Active',
-                            value: _fmt(data.active ?? 0),
-                          ),
-                          ReusabelRow(
-                            title: 'Critical',
-                            value: _fmt(data.critical ?? 0),
-                          ),
-                          ReusabelRow(
-                            title: 'Today Deaths',
-                            value: _fmt(data.todayDeaths ?? 0),
-                          ),
-                          ReusabelRow(
-                            title: 'Today Recovered',
-                            value: _fmt(data.todayRecovered ?? 0),
-                          ),
-                          const SizedBox(height: 8),
                         ],
                       ),
                     ),
@@ -345,17 +381,22 @@ class _WorldstateScreenState extends State<WorldstateScreen>
                         elevation: 2,
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
+                        Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => const CountriesListScreen(),
+                            builder: (_) => RootShell(
+                              initialIndex: 1,
+                            ), // open with Countries tab
                           ),
                         );
                       },
+
                       icon: const Icon(Icons.flag),
                       label: const Text(
                         'Track Countries',
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -412,14 +453,14 @@ class _KpiTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: bg.withOpacity(0.4)),
+        border: Border.all(color: _alpha(bg, 0.40)), // no withOpacity
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Row(
         children: [
           CircleAvatar(
             radius: 22,
-            backgroundColor: iconColor.withOpacity(0.12),
+            backgroundColor: _alpha(iconColor, 0.12), // no withOpacity
             child: Icon(icon, color: iconColor),
           ),
           const SizedBox(width: 12),
@@ -516,6 +557,71 @@ class ReusabelRow extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           const Divider(height: 1),
+        ],
+      ),
+    );
+  }
+}
+
+// ---- alpha helpers (no withOpacity) ----
+int _a(double o) => (o * 255).round().clamp(0, 255);
+Color _alpha(Color c, double o) => c.withAlpha(_a(o));
+
+// Small stat tile used in Detailed Summary
+class _StatTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _StatTile({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      decoration: BoxDecoration(
+        color: _alpha(color, 0.08),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: _alpha(color, 0.20)),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: _alpha(color, 0.12),
+            child: Icon(icon, color: color),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

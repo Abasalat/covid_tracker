@@ -15,7 +15,9 @@ class MyApp extends StatelessWidget {
       title: 'Covid-19 Tracker',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 255, 255, 255),
+        ),
       ),
       home: const SplashScreen(),
     );
