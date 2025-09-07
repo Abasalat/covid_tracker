@@ -64,25 +64,21 @@ Even though COVID-19 has faded from daily headlines, this project is a great **n
 - **Screens**
   - `view/splash_screen.dart` – rotating virus intro
   - `view/worldstate_screen.dart` – global dashboard
-![1](https://github.com/user-attachments/assets/40563627-736c-4ea0-a6ef-223178a9043c)
-![2](https://github.com/user-attachments/assets/da0cf988-94ec-499e-9fd0-319487ea57fb)
-![3](https://github.com/user-attachments/assets/331b74a8-27ad-442e-8f94-93300f241013)
-![4](https://github.com/user-attachments/assets/9f239943-e678-4bd8-bae6-c4fb49fff49d)
-![5](https://github.com/user-attachments/assets/a1e513fe-0157-43af-83fd-06b059d26e9e)
-![6](https://github.com/user-attachments/assets/1a141c66-e8e5-4f49-b3f5-19d97193c921)
-![7](https://github.com/user-attachments/assets/a686809d-b018-4cca-9422-540a74a3a5e7)
-![8](https://github.com/user-attachments/assets/d3f1fbc8-88dd-48e2-94e3-2a78579c9551)
-![9](https://github.com/user-attachments/assets/fa0b49ed-dc8c-4929-9ffe-f8fb18b03a53)
-
-
   - `view/countries_list.dart` – list + search + filters
   - `view/country_record.dart` – per-country detail
   - `view/root_sheel.dart` – bottom-nav shell (tabs)
 
+<img src="https://github.com/user-attachments/assets/40563627-736c-4ea0-a6ef-223178a9043c" width="300" height="1000" />
+<img src="https://github.com/user-attachments/assets/da0cf988-94ec-499e-9fd0-319487ea57fb" width="300" height="1000" />
+<img src="https://github.com/user-attachments/assets/331b74a8-27ad-442e-8f94-93300f241013" width="300" height="1000" />
+<img src="https://github.com/user-attachments/assets/9f239943-e678-4bd8-bae6-c4fb49fff49d" width="300" height="1000" />
+<img src="https://github.com/user-attachments/assets/a1e513fe-0157-43af-83fd-06b059d26e9e" width="300" height="1000" />
+<img src="https://github.com/user-attachments/assets/1a141c66-e8e5-4f49-b3f5-19d97193c921" width="300" height="1000" />
+<img src="https://github.com/user-attachments/assets/a686809d-b018-4cca-9422-540a74a3a5e7" width="300" height="1000" />
+<img src="https://github.com/user-attachments/assets/d3f1fbc8-88dd-48e2-94e3-2a78579c9551" width="300" height="1000" />
+<img src="https://github.com/user-attachments/assets/fa0b49ed-dc8c-4929-9ffe-f8fb18b03a53" width="300" height="1000" />
 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
